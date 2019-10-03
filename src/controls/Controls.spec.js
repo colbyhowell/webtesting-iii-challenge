@@ -23,7 +23,7 @@ test("open button text changes to reflect state the door will in when clicked", 
   const locked = false;
   const closed = false;
   const toggleClosed = jest.fn();
-  const { getByText, findByText } = render(
+  const { getByText } = render(
     <Controls locked={locked} closed={closed} toggleClosed={toggleClosed} />
   );
 
@@ -33,4 +33,35 @@ test("open button text changes to reflect state the door will in when clicked", 
 
   expect(closeBtn).toBeDefined();
   expect(toggleClosed).toHaveBeenCalled();
+});
+
+test("closed toggle button is disabled if the gate is locked", () => {
+  const locked = true;
+  const closed = true;
+  const toggleClosed = jest.fn();
+
+  const { getByText } = render(
+    <Controls locked={locked} closed={closed} toggleClosed={toggleClosed} />
+  );
+
+  const openBtn = getByText(/open gate/i);
+
+  fireEvent.click(openBtn);
+  expect(toggleClosed).not.toHaveBeenCalled();
+});
+
+test("the locked toggle button is disabled if gate is open", () => {
+  const locked = false;
+  const closed = false;
+  const toggleLocked = jest.fn();
+
+  const { getByText } = render(
+    <Controls locked={locked} closed={closed} toggleLocked={toggleLocked} />
+  );
+
+  const lockBtn = getByText(/lock gate/i);
+
+  fireEvent.click(lockBtn);
+
+  expect(toggleLocked).not.toHaveBeenCalled();
 });
